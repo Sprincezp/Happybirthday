@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Magical Birthday Experience</title>
+    
+    <!-- External Libraries -->
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* --- ADVANCED CORE VARIABLES --- */
+        :root {
+            --bg-deep: #020205;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.15);
+            
+            --neon-gold: #ffd700;
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d1f7ff;
+            
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            
+            --font-heading: 'Cinzel', serif;
+            --font-body: 'Poppins', sans-serif;
+            --font-script: 'Great Vibes', cursive;
+            --font-elegant: 'Playfair Display', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Hide default cursor for custom one */
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            width: 100vw;
+            min-height: 100vh;
+        }
+
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--neon-pink); border-radius: 3px; }
+
+        /* --- CUSTOM CURSOR --- */
+        #cursor-dot, #cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        #cursor-dot {
+            width: 8px; height: 8px;
+            background-color: var(--neon-gold);
+        }
+        #cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid var(--neon-gold);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        body:hover #cursor-outline {
+            opacity: 1;
+        }
+
+        /* --- BACKGROUND ANIMATION --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #000000 100%);
+        }
+        #stars-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* --- UTILITIES --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-panel:hover {
+            box-shadow: 0 0 25px rgba(255, 42, 109, 0.2);
+            border-color: var(--glass-highlight);
+        }
+
+        .text-glow { text-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+        .text-glow-blue { text-shadow: 0 0 20px rgba(5, 217, 232, 0.6); }
+        .text-gradient-gold {
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+        }
+
+        .btn-magic {
+            background: rgba(255,255,255,0.05);
+            color: var(--neon-gold);
+            border: 1px solid var(--neon-gold);
+            padding: 12px 40px;
+            font-family: var(--font-heading);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .btn-magic::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%;
+            background: var(--neon-gold); z-index: -1; transition: 0.4s;
+        }
+        .btn-magic:hover::before { width: 100%; }
+        .btn-magic:hover { color: #000; box-shadow: 0 0 30px var(--neon-gold); transform: translateY(-3px); }
+
+        /* --- SECTIONS --- */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        section.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* --- PRELOADER --- */
+        #preloader { z-index: 10000; }
+        .loader-ring {
+            width: 80px; height: 80px;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--neon-pink);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- 3D CAKE CONTAINER --- */
+        #cake-wrapper {
+            width: 100%;
+            height: 60vh;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* --- MEMORY GALLERY (POLAROIDS) --- */
+        .gallery-scene {
+            perspective: 1500px;
+            width: 100%;
+            height: 50vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        /* --- ADVANCED POLAROID CARD STYLE --- */
+        .polaroid {
+            width: 280px;
+            /* Dark Glassy Background with tint */
+            background: rgba(20, 20, 25, 0.7); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            
+            padding: 15px 15px 50px 15px;
+            border-radius: 4px;
+            
+            /* Double Border Effect: Inner Gold + Outer Shadow */
+            border: 1px solid rgba(255, 215, 0, 0.2); /* Subtle outer line */
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.6), /* Deep shadow */
+                inset 0 0 20px rgba(255, 215, 0, 0.05); /* Inner glow */
+            
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: none; /* Hidden initially */
+            overflow: hidden; /* Important for zoom effect */
+        }
+
+        /* Decorative Corner Accents (Optional Unique touch) */
+        .polaroid::before, .polaroid::after {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            border-color: var(--neon-gold);
+            border-style: solid;
+            transition: 0.3s;
+            opacity: 0.6;
+        }
+        .polaroid::before { top: 5px; left: 5px; border-width: 2px 0 0 2px; }
+        .polaroid::after { bottom: 5px; right: 5px; border-width: 0 2px 2px 0; }
+
+        .polaroid img {
+            width: 100%; 
+            height: 280px; 
+            object-fit: cover; 
+            /* High contrast & subtle filter */
+            filter: brightness(1.1) contrast(1.1); 
+            transition: transform 0.6s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .polaroid p {
+            color: #fff; /* White text on dark glass */
+            font-family: 'Great Vibes', cursive; 
+            font-size: 2rem;
+            text-align: center; 
+            margin-top: 15px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .polaroid.active {
+            display: block;
+        }
+
+        /* --- HOVER ANIMATIONS --- */
+        .polaroid:hover {
+            z-index: 100; /* Bring to front */
+            transform: scale(1.08) translateY(-15px) rotate(0deg) !important; /* Ignore inline rotation on hover */
+            border-color: var(--neon-gold);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.4); /* Strong Gold Glow */
+        }
+
+        .polaroid:hover img {
+            transform: scale(1.1); /* Image zooms in slightly */
+        }
+
+        .polaroid:hover::before, .polaroid:hover::after {
+            width: 100%; height: 100%; /* Lines expand */
+            opacity: 1;
+        }
+
+        /* --- ADVANCED TIMELINE --- */
+        .timeline-container {
+            position: relative;
+            max-width: 1000px;
+            width: 100%;
+            padding: 20px 0;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 50%; top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, var(--neon-gold), transparent);
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+        .timeline-box {
+            position: relative;
+            width: 45%;
+            padding: 30px;
+            margin-bottom: 50px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: 0.8s ease;
+        }
+        .timeline-box.visible { opacity: 1; transform: translateY(0); }
+        
+        .timeline-box:nth-child(odd) { left: 0; text-align: right; border-right: 3px solid var(--neon-pink); }
+        .timeline-box:nth-child(even) { left: 55%; text-align: left; border-left: 3px solid var(--neon-blue); }
+        
+        .timeline-dot {
+            position: absolute; width: 20px; height: 20px;
+            background: var(--bg-deep); border: 3px solid var(--neon-gold);
+            border-radius: 50%; top: 30px; z-index: 2;
+            box-shadow: 0 0 15px var(--neon-gold);
+        }
+        .timeline-box:nth-child(odd) .timeline-dot { right: -58px; }
+        .timeline-box:nth-child(even) .timeline-dot { left: -62px; }
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            .timeline-line { left: 30px; }
+            .timeline-box { width: calc(100% - 70px); left: 70px !important; text-align: left !important; border: none !important; border-left: 3px solid var(--neon-pink) !important; }
+            .timeline-box:nth-child(odd) .timeline-dot, .timeline-box:nth-child(even) .timeline-dot { left: -42px; right: auto; }
+            
+            h1.welcome-title { font-size: 2.5rem; }
+            .font-script { font-size: 2.5rem; }
+            
+            #cursor-dot, #cursor-outline { display: none; } /* Hide custom cursor on touch */
+            * { cursor: auto; }
+        }
+
+        /* --- FINALE CANVAS --- */
+        #fireworks {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 2001;
+        }
+
+        /* --- AUDIO FAB --- */
+        .fab-music {
+            position: fixed; top: 20px; right: 20px;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--neon-gold);
+            color: var(--neon-gold);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+        .fab-music:hover { transform: rotate(90deg) scale(1.1); background: var(--neon-gold); color: #000; }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+
+    <!-- Backgrounds -->
+    <div id="canvas-bg"></div>
+    <canvas id="stars-container"></canvas>
+    <canvas id="fireworks"></canvas>
+
+    <!-- Audio Control -->
+    <div class="fab-music" onclick="toggleMusic()">
+        <i class="fas fa-music"></i>
+    </div>
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/10/14/audio_9839f792cb.mp3?filename=happy-birthday-123379.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 1. PRELOADER -->
+    <section id="preloader" class="active">
+        <div class="text-center">
+            <div class="loader-ring mx-auto mb-3"></div>
+            <h2 class="font-script text-neon-gold">Loading Magic...</h2>
+            <div class="progress mt-3" style="width: 250px; height: 4px; background: rgba(255,255,255,0.1); margin: 0 auto; border-radius: 2px;">
+                <div id="loading-bar" class="bg-warning" style="width: 0%; height: 100%; box-shadow: 0 0 10px var(--neon-gold);"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. WELCOME SCREEN -->
+    <section id="welcome-screen">
+        <div class="text-center" data-aos="zoom-in" data-aos-duration="2000">
+            <h1 class="font-script display-1 mb-2 text-white">Happy Birthday</h1>
+            <h2 class="welcome-title text-gradient-gold text-uppercase display-3">ROSU</h2>
+            <p class="lead mt-4 text-white-50 font-elegant">A universe of surprises awaits.</p>
+            <button class="btn btn-magic mt-5" onclick="startJourney()">Begin Journey</button>
+        </div>
+    </section>
+
+    <!-- 3. COUNTDOWN -->
+    <section id="countdown-section">
+        <div class="glass-panel p-5 text-center w-100" style="max-width: 800px;">
+            <h3 class="text-uppercase mb-5 tracking-widest text-neon-blue">Approaching The Moment</h3>
+            <div class="d-flex justify-content-center flex-wrap gap-3" id="countdown-timer">
+                <div class="glass-panel p-3" style="min-width: 100px;">
+                    <div class="display-4 fw-bold text-neon-gold" id="days">00</div>
+                    <div class="small text-uppercase">Days</div>
+                </div>
+                <div class="glass-panel p-3" style="min-width: 100px;">
+                    <div class="display-4 fw-bold text-neon-pink" id="hours">00</div>
+                    <div class="small text-uppercase">Hours</div>
+                </div>
+                <div class="glass-panel p-3" style="min-width: 100px;">
+                    <div class="display-4 fw-bold text-neon-blue" id="minutes">00</div>
+                    <div class="small text-uppercase">Mins</div>
+                </div>
+                <div class="glass-panel p-3" style="min-width: 100px;">
+                    <div class="display-4 fw-bold text-white" id="seconds">00</div>
+                    <div class="small text-uppercase">Secs</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 3D CAKE SECTION -->
+    <section id="cake-section">
+        <div class="text-center mb-3">
+            <h2 class="text-gradient-gold font-script">Make A Wish</h2>
+        </div>
+        
+        <div id="cake-wrapper">
+            <!-- Three.js Canvas appended here -->
+        </div>
+        
+        <div class="mt-4 text-center">
+            <p id="cake-msg" class="lead text-white-50">Tap the candle flame to blow it out</p>
+            <button id="next-step-btn" class="btn btn-magic" style="display: none;" onclick="goToGift()">Reveal Gift</button>
+        </div>
+    </section>
+
+    <!-- 5. GIFT MESSAGE -->
+    <section id="gift-section">
+        <div class="glass-panel p-5 text-center w-100" style="max-width: 600px;">
+            <i class="fas fa-gift fa-3x text-neon-pink mb-4 animate__animated animate__bounceIn"></i>
+            <h2 class="text-white mb-4">A Special Note</h2>
+            <div class="text-start font-elegant fs-5 lh-lg text-white-90" id="letter-content" style="min-height: 150px;"></div>
+            <button class="btn btn-magic mt-4" onclick="goToGallery()">Unlock Memories</button>
+        </div>
+    </section>
+
+    <!-- 6. MEMORY GALLERY -->
+    <section id="memory-section">
+        <h2 class="text-neon-pink font-script mb-5 text-center">Memory Lane</h2>
+        
+        <div class="gallery-scene" id="gallery-container">
+            <!-- Images injected by JS -->
+        </div>
+
+        <div class="text-center mt-5">
+            <p id="gallery-counter" class="text-white-50 mb-3">Click to spread the memories</p>
+            <button class="btn btn-magic" onclick="revealNextMemory()">Reveal Moment</button>
+            <button class="btn btn-magic ms-2" onclick="goToTimeline()" style="display:none;" id="to-timeline-btn">See Our Journey</button>
+        </div>
+    </section>
+
+    <!-- 7. TIMELINE -->
+    <section id="timeline-section">
+        <h2 class="text-neon-gold font-script mb-5 text-center">Our Story</h2>
+        
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            <!-- Timeline items injected via JS -->
+        </div>
+
+        <div class="text-center mt-5">
+            <button class="btn btn-magic" onclick="triggerFinale()">Grand Finale</button>
+        </div>
+    </section>
+
+    <!-- 8. FINAL WISHES -->
+    <section id="finale-section">
+        <div class="text-center z-2 position-relative">
+            <h1 class="display-1 text-gradient-gold mb-3 animate__animated animate__zoomIn">Happy Birthday!</h1>
+            <p class="lead text-white mb-5">May all your dreams come true.</p>
+            <button class="btn btn-magic" onclick="location.reload()">Replay Experience</button>
+        </div>
+    </section>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // --- 1. CONFIGURATION ---
+        const memories = [
+            { url: 'Image/FirstMeet.jpeg', caption: 'First Meet', angle: -5 },
+            { url: 'Image/Adventure.jpeg', caption: 'The Adventure', angle: 8 },
+            { url: 'Image/Besties.jpeg', caption: 'Besties', angle: -3 },
+            { url: 'Image/WhatsApp Image 2026-06-09 at 1.24.37 PM (1).jpeg', caption: 'Pure Joy', angle: 6 },
+            { url: 'Image/Tea.jpeg', caption: 'Beautiful Moments', angle: -7 },
+            { url: 'Image/Laughter.jpeg', caption: 'Laughter', angle: 4 },
+            { url: 'Image/Together.jpeg', caption: 'Together', angle: -6 },
+            { url: 'Image/Purse.jpeg', caption: 'Memory', angle: 8 },
+            { url: 'Image/Forever.jpeg', caption: 'Forever', angle: 5 },
+        ];
+        
+        const timelineData = [
+    {
+        year: '2022',
+        title: 'The Beginning',
+        desc: 'The universe conspired, and our paths finally crossed. This is where our story started, with a single hello.'
+    },
+    {
+        year: '2023',
+        title: 'Best Friends',
+        desc: 'From simple conversations to endless laughter, we became each other’s favorite person and closest friend.'
+    },
+    {
+        year: '2024',
+        title: 'A Beautiful Bond',
+        desc: 'Our connection grew stronger every day, and our first meetup turned unforgettable moments into cherished memories.'
+    },
+    {
+        year: '2025',
+        title: 'The Distance',
+        desc: 'Misunderstandings created a temporary distance between us, but the bond we built was stronger than the challenges we faced.'
+    },
+    {
+        year: '2026',
+        title: 'Still Together',
+        desc: 'After every up and down, we remain side by side — stronger, wiser, and grateful to have each other in our lives.'
+    },
+];
+
+        let memIndex = 0;
+        let threeJSCreated = false;
+        let candles = [];
+
+        // --- 2. INITIALIZATION ---
+        AOS.init({ once: true, offset: 100 });
+        
+        // Custom Cursor Logic
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            
+            // Add a slight delay to the outline for fluid feel
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // --- 3. PRELOADER ---
+        window.onload = () => {
+            let width = 0;
+            const bar = document.getElementById('loading-bar');
+            const interval = setInterval(() => {
+                width += Math.random() * 2;
+                if(width > 100) width = 100;
+                bar.style.width = width + '%';
+                
+                if(width === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        gsap.to('#preloader', { opacity: 0, duration: 1, onComplete: () => {
+                            document.getElementById('preloader').classList.remove('active');
+                            document.getElementById('welcome-screen').classList.add('active');
+                        }});
+                    }, 500);
+                }
+            }, 20);
+        };
+
+        // --- 4. JOURNEY LOGIC ---
+        function toggleMusic() {
+            const audio = document.getElementById('bg-music');
+            const icon = document.querySelector('.fab-music i');
+            if(audio.paused) {
+                audio.play().catch(e => console.log('Interaction needed'));
+                icon.className = 'fas fa-volume-up';
+                document.querySelector('.fab-music').style.boxShadow = '0 0 15px var(--neon-gold)';
+            } else {
+                audio.pause();
+                icon.className = 'fas fa-volume-mute';
+                document.querySelector('.fab-music').style.boxShadow = 'none';
+            }
+        }
+
+        function switchSection(hideId, showId) {
+            const current = document.getElementById(hideId);
+            const next = document.getElementById(showId);
+            
+            gsap.to(current, { opacity: 0, duration: 0.5, onComplete: () => {
+                current.classList.remove('active');
+                next.classList.add('active');
+                gsap.to(next, { opacity: 1, duration: 0.5 });
+                
+                // Trigger specific section logic
+                if(showId === 'cake-section') {
+                    setTimeout(initThreeJS, 100); // Small delay to ensure flex display is active
+                }
+                if(showId === 'timeline-section') {
+                    initTimelineObserver();
+                }
+            }});
+        }
+
+        function startJourney() {
+            document.getElementById('bg-music').play().catch(e => {});
+            switchSection('welcome-screen', 'countdown-section');
+            startCountdown();
+        }
+
+        // --- 5. COUNTDOWN ---
+        function startCountdown() {
+            // Demo countdown: finishes in 5 seconds
+            let timeLeft = 5;
+            const interval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('seconds').innerText = timeLeft < 10 ? '0'+timeLeft : timeLeft;
+                
+                if(timeLeft <= 0) {
+                    clearInterval(interval);
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    setTimeout(() => switchSection('countdown-section', 'cake-section'), 1000);
+                }
+            }, 1000);
+        }
+
+        // --- 6. ADVANCED THREE.JS CAKE ---
+        function initThreeJS() {
+            if(threeJSCreated) return;
+            const container = document.getElementById('cake-wrapper');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Scene
+            const scene = new THREE.Scene();
+            
+            // Camera
+            const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+            camera.position.set(0, 5, 12);
+            camera.lookAt(0, 0, 0);
+
+            // Renderer
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(width, height);
+            renderer.shadowMap.enabled = true;
+            container.innerHTML = ''; // Clear previous if any
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            const spotLight = new THREE.SpotLight(0xffd700, 1);
+            spotLight.position.set(5, 10, 5);
+            spotLight.castShadow = true;
+            spotLight.shadow.bias = -0.0001;
+            scene.add(spotLight);
+
+            const pointLight = new THREE.PointLight(0xffaa00, 0.5, 10);
+            pointLight.position.set(-2, 3, 2);
+            scene.add(pointLight);
+
+            // Plate
+            const plateGeo = new THREE.CylinderGeometry(4, 4, 0.2, 32);
+            const plateMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1 });
+            const plate = new THREE.Mesh(plateGeo, plateMat);
+            plate.position.y = -0.1;
+            plate.receiveShadow = true;
+            scene.add(plate);
+
+            // Cake Layers
+            function createLayer(r, h, y, color) {
+                const geo = new THREE.CylinderGeometry(r, r, h, 32);
+                const mat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.5 });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.y = y;
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                return mesh;
+            }
+
+            const layer1 = createLayer(2.5, 1, 0.5, 0x8B4513); // Chocolate
+            const layer2 = createLayer(2.0, 0.8, 1.4, 0xFFC0CB); // Strawberry
+            scene.add(layer1, layer2);
+
+            // Frosting Drips (Simplified with Torus)
+            const dripGeo = new THREE.TorusGeometry(2.0, 0.1, 16, 100);
+            const dripMat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+            const drip = new THREE.Mesh(dripGeo, dripMat);
+            drip.rotation.x = Math.PI / 2;
+            drip.position.y = 1.8;
+            scene.add(drip);
+
+            // Candles Group
+            const candleGroup = new THREE.Group();
+            scene.add(candleGroup);
+
+            for(let i=-1; i<=1; i++) {
+                // Candle Body
+                const cGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.8, 16);
+                const cMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+                const candle = new THREE.Mesh(cGeo, cMat);
+                candle.position.set(i * 0.8, 2.2, 0);
+                candle.castShadow = true;
+                
+                // Wick
+                const wGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.2);
+                const wMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+                const wick = new THREE.Mesh(wGeo, wMat);
+                wick.position.y = 0.5;
+                candle.add(wick);
+
+                // Flame (Emissive)
+                const fGeo = new THREE.SphereGeometry(0.15, 16, 16);
+                const fMat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+                const flame = new THREE.Mesh(fGeo, fMat);
+                flame.position.y = 0.7;
+                candle.add(flame);
+                
+                // Light for flame
+                const fLight = new THREE.PointLight(0xffaa00, 0.8, 3);
+                fLight.position.y = 0.8;
+                candle.add(fLight);
+
+                candles.push({ mesh: candle, flame: flame, light: fLight, active: true });
+                candleGroup.add(candle);
+            }
+
+            // Smoke Particles System
+            const smokeParticles = [];
+            const smokeGeo = new THREE.SphereGeometry(0.05, 8, 8);
+            const smokeMat = new THREE.MeshBasicMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.4 });
+
+            function createSmoke(pos) {
+                const p = new THREE.Mesh(smokeGeo, smokeMat.clone());
+                p.position.copy(pos);
+                p.position.y += 1; // Start slightly above wick
+                scene.add(p);
+                smokeParticles.push({ mesh: p, life: 1.0, vel: new THREE.Vector3((Math.random()-0.5)*0.05, Math.random()*0.05 + 0.02, 0) });
+            }
+
+            // Interaction
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+
+            renderer.domElement.addEventListener('pointerdown', (event) => {
+                const rect = renderer.domElement.getBoundingClientRect();
+                mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+                // Check intersection with candles
+                const intersects = raycaster.intersectObjects(candleGroup.children);
+                
+                if (intersects.length > 0) {
+                    // Find which candle was clicked
+                    const clickedObj = intersects[0].object;
+                    // traverse up to find the candle parent
+                    let candle = clickedObj;
+                    while(candle.parent !== candleGroup && candle.parent !== null) {
+                        candle = candle.parent;
+                    }
+
+                    // Extinguish logic
+                    const cData = candles.find(c => c.mesh === candle);
+                    if(cData && cData.active) {
+                        cData.active = false;
+                        cData.flame.visible = false;
+                        cData.light.intensity = 0;
+                        createSmoke(cData.mesh.position);
+                        showToast("Whoosh!");
+                    }
+                    
+                    // Check if all out
+                    if(candles.every(c => !c.active)) {
+                        document.getElementById('cake-msg').innerText = "Delicious! Now open your gift.";
+                        document.getElementById('next-step-btn').style.display = 'inline-block';
+                    }
+                }
+            });
+
+            // Animation Loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // Rotate entire cake slowly
+                scene.rotation.y += 0.002;
+
+                // Flicker active flames
+                candles.forEach(c => {
+                    if(c.active) {
+                        c.flame.scale.setScalar(1 + Math.random() * 0.2);
+                        c.flame.position.y = 0.7 + Math.random() * 0.05;
+                        c.light.intensity = 0.6 + Math.random() * 0.4;
+                    }
+                });
+
+                // Animate Smoke
+                for(let i = smokeParticles.length-1; i>=0; i--) {
+                    const s = smokeParticles[i];
+                    s.life -= 0.01;
+                    s.mesh.position.add(s.vel);
+                    s.mesh.scale.multiplyScalar(1.02);
+                    s.mesh.material.opacity = s.life * 0.4;
+                    if(s.life <= 0) {
+                        scene.remove(s.mesh);
+                        smokeParticles.splice(i, 1);
+                    }
+                }
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                const w = container.clientWidth;
+                const h = container.clientHeight;
+                renderer.setSize(w, h);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            });
+
+            threeJSCreated = true;
+        }
+
+        function goToGift() {
+            switchSection('cake-section', 'gift-section');
+            typeText("Dear Rosu,\n\nOn this special day, I wanted to create something as unique as you are. May this year bring you endless joy, success, and beautiful moments.\n\nKeep smiling!\n\nWith Love,", "letter-content");
+        }
+
+        // --- 7. TYPEWRITER EFFECT ---
+        function typeText(text, elementId, speed = 30) {
+            let i = 0;
+            const el = document.getElementById(elementId);
+            el.innerHTML = "";
+            function type() {
+                if (i < text.length) {
+                    const char = text.charAt(i);
+                    el.innerHTML += char === "\n" ? "<br>" : char;
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // --- 8. GALLERY ---
+        function goToGallery() {
+            switchSection('gift-section', 'memory-section');
+        }
+
+        function revealNextMemory() {
+            if(memIndex >= memories.length) {
+                document.getElementById('to-timeline-btn').style.display = 'inline-block';
+                document.getElementById('gallery-counter').innerText = "All Memories Unlocked";
+                return;
+            }
+
+            const data = memories[memIndex];
+            const container = document.getElementById('gallery-container');
+            
+            const div = document.createElement('div');
+            div.className = 'polaroid active';
+            div.style.setProperty('--r', data.angle + 'deg');
+            div.innerHTML = `<img src="${data.url}"><p>${data.caption}</p>`;
+            
+            // Random scatter
+            const x = (Math.random() - 0.5) * 100;
+            const z = (Math.random() - 0.5) * 100;
+            div.style.transform = `translateX(${x}px) translateZ(${z}px) rotate(${data.angle}deg)`;
+            
+            // Add tilt effect on mousemove
+            div.addEventListener('mousemove', (e) => {
+                const rect = div.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg rotation
+                const rotateY = ((x - centerX) / centerX) * 10;
+
+                gsap.to(div, { rotationX: rotateX, rotationY: rotateY, duration: 0.5, ease: "power1.out" });
+            });
+            
+            div.addEventListener('mouseleave', () => {
+                 gsap.to(div, { rotationX: 0, rotationY: 0, duration: 0.5 });
+            });
+
+            container.appendChild(div);
+            
+            // Animation In - Cinematic elastic entry
+            gsap.fromTo(div, 
+                { 
+                    scale: 0.2, 
+                    opacity: 0, 
+                    rotation: Math.random() * 90 - 45, // Random spin entry
+                    z: -200 
+                }, 
+                { 
+                    scale: 1, 
+                    opacity: 1, 
+                    rotation: data.angle, // Settle to designed angle
+                    z: 0,
+                    duration: 1.2, 
+                    ease: "elastic.out(1, 0.75)", // Bouncy elastic effect
+                    delay: 0.1
+                }
+            );
+
+            // Add a "Shine" flash effect on entry
+            const shine = document.createElement('div');
+            shine.style.position = 'absolute';
+            shine.style.top = '0'; shine.style.left = '0';
+            shine.style.width = '100%'; shine.style.height = '100%';
+            shine.style.background = 'linear-gradient(45deg, transparent, rgba(255,255,255,0.8), transparent)';
+            shine.style.transform = 'translateX(-100%)';
+            shine.style.zIndex = '5';
+            div.appendChild(shine);
+
+            gsap.to(shine, {
+                x: '200%',
+                duration: 0.8,
+                ease: "power2.inOut",
+                delay: 0.5
+            });
+            
+            memIndex++;
+            document.getElementById('gallery-counter').innerText = `${memIndex} / ${memories.length}`;
+        }
+
+        function goToTimeline() {
+            switchSection('memory-section', 'timeline-section');
+        }
+
+        // --- 9. TIMELINE SCROLL ANIMATION ---
+        function initTimelineObserver() {
+            const items = document.querySelectorAll('.timeline-box');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            items.forEach(item => observer.observe(item));
+        }
+
+        // Populate Timeline HTML
+        const tlContainer = document.querySelector('.timeline-container');
+        timelineData.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'timeline-box';
+            div.innerHTML = `
+                <div class="timeline-dot"></div>
+                <h3 class="text-neon-gold">${item.year}</h3>
+                <h5 class="text-white">${item.title}</h5>
+                <p class="text-white-50 small mt-2">${item.desc}</p>
+            `;
+            tlContainer.appendChild(div);
+        });
+
+        // --- 10. FINALE ---
+        function triggerFinale() {
+            switchSection('timeline-section', 'finale-section');
+            startFireworks();
+        }
+
+        function startFireworks() {
+            const canvas = document.getElementById('fireworks');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            let particles = [];
+            
+            function Particle(x, y, color) {
+                this.x = x; this.y = y;
+                this.color = color;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 5 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.005;
+            }
+            
+            Particle.prototype.draw = function() {
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            Particle.prototype.update = function() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.05; // Gravity
+                this.alpha -= this.decay;
+            }
+
+            function loop() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear trail
+                
+                // Add new firework
+                if(Math.random() < 0.05) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * (canvas.height / 2);
+                    const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    for(let i=0; i<50; i++) {
+                        particles.push(new Particle(x, y, color));
+                    }
+                }
+                
+                for(let i = particles.length-1; i>=0; i--) {
+                    particles[i].draw();
+                    particles[i].update();
+                    if(particles[i].alpha <= 0) particles.splice(i, 1);
+                }
+                
+                requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        // --- TOAST NOTIFICATION ---
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.innerText = message;
+            Object.assign(toast.style, {
+                position: 'fixed', bottom: '30px', left: '50%', transform: 'translateX(-50%)',
+                background: 'rgba(255,255,255,0.9)', color: '#000', padding: '10px 25px',
+                borderRadius: '30px', zIndex: '9999', fontWeight: 'bold', boxShadow: '0 5px 15px rgba(0,0,0,0.3)'
+            });
+            document.body.appendChild(toast);
+            gsap.from(toast, { y: 20, opacity: 0, duration: 0.3 });
+            gsap.to(toast, { y: 0, opacity: 0, delay: 2, duration: 0.3, onComplete: () => toast.remove() });
+        }
+
+        // --- STARFIELD BACKGROUND ---
+        const starCanvas = document.getElementById('stars-container');
+        const sCtx = starCanvas.getContext('2d');
+        let stars = [];
+        
+        function resizeStars() {
+            starCanvas.width = window.innerWidth;
+            starCanvas.height = window.innerHeight;
+            stars = [];
+            for(let i=0; i<200; i++) {
+                stars.push({
+                    x: Math.random() * starCanvas.width,
+                    y: Math.random() * starCanvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.2
+                });
+            }
+        }
+        window.addEventListener('resize', resizeStars);
+        resizeStars();
+
+        function animateStars() {
+            sCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+            sCtx.fillStyle = "white";
+            stars.forEach(star => {
+                sCtx.globalAlpha = Math.random() * 0.5 + 0.5;
+                sCtx.beginPath();
+                sCtx.arc(star.x, star.y, star.size, 0, Math.PI*2);
+                sCtx.fill();
+                star.y -= star.speed;
+                if(star.y < 0) star.y = starCanvas.height;
+            });
+            requestAnimationFrame(animateStars);
+        }
+        animateStars();
+
+    </script>
+</body>
+</html>
